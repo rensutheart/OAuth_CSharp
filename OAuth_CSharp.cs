@@ -106,8 +106,8 @@ public class OAuth_CSharp
             {Uri.EscapeDataString("oauth_nonce"), Uri.EscapeDataString(oauthNonce)},
             {Uri.EscapeDataString("oauth_signature_method"), Uri.EscapeDataString(oauthMethod)},
             {Uri.EscapeDataString("oauth_timestamp"), Uri.EscapeDataString(oauthTimeStamp)},
-            {Uri.EscapeDataString("oauth_token"), Uri.EscapeDataString(oauthToken)}//,
-            //{Uri.EscapeDataString("oauth_version"), Uri.EscapeDataString(oauthVersion)}
+            {Uri.EscapeDataString("oauth_token"), Uri.EscapeDataString(oauthToken)},
+            {Uri.EscapeDataString("oauth_version"), Uri.EscapeDataString(oauthVersion)}
         };
     }
 
@@ -119,8 +119,8 @@ public class OAuth_CSharp
 			{Uri.EscapeDataString("oauth_consumer_key"), Uri.EscapeDataString(oauthConsumerKey)},
             {Uri.EscapeDataString("oauth_nonce"), Uri.EscapeDataString(oauthNonce)},
             {Uri.EscapeDataString("oauth_signature_method"), Uri.EscapeDataString(oauthMethod)},
-            {Uri.EscapeDataString("oauth_timestamp"), Uri.EscapeDataString(oauthTimeStamp)}//,           
-           // {Uri.EscapeDataString("oauth_version"), Uri.EscapeDataString(oauthVersion)}
+            {Uri.EscapeDataString("oauth_timestamp"), Uri.EscapeDataString(oauthTimeStamp)},           
+            {Uri.EscapeDataString("oauth_version"), Uri.EscapeDataString(oauthVersion)}
         };
     }
 
@@ -157,6 +157,7 @@ public class OAuth_CSharp
 
         return GenerateSignatureBase(url, HTTP_Method);
     }
+
     private string GenerateSignatureBase(string url, string HTTP_Method)
     { 
         string parameterString = String.Empty;
@@ -171,7 +172,7 @@ public class OAuth_CSharp
             if (++keyCount != totalKeys) // indicates the last item is found
                 parameterString += "&";
         }
-        //parameterString = "oauth_consumer_key=ck_eb425c3f55f09555c61b5c49c19c40fe170cc761&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1484230019&oauth_nonce=wI6kZx";
+        
         outputString += "?" + parameterString;
         //Debug.Log(parameterString);
 
@@ -183,7 +184,11 @@ public class OAuth_CSharp
 
     private string GenerateSignature(string signatureBase)
     {
-        string signatureKey = Uri.EscapeDataString(oauthConsumerSecret) + "&";
+        string signatureKey = "";
+        if(oauthToken != null && oauthTokenSecret != null)
+            signatureKey = Uri.EscapeDataString(oauthConsumerSecret) + "&" + Uri.EscapeDataString(oauthTokenSecret);
+        else
+            signatureKey = Uri.EscapeDataString(oauthConsumerSecret) + "&";
         HMACSHA1 hmacsha1 = new HMACSHA1(new ASCIIEncoding().GetBytes(signatureKey));
 
         //hash the values
